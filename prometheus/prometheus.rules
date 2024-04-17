@@ -1,0 +1,74 @@
+groups:
+  - name: HAProxyAlerts
+    rules:
+      - alert: Web BackendServerDown
+        expr: haproxy_server_check_status{proxy="web_servers",server="web0"} != 6 or haproxy_server_check_status{proxy="web_servers",server="web1"} != 6
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend server {{ $labels.server }} is down"
+          description: "The Apache on backend server {{ $labels.server }} is not able to take requests."
+
+  - name: Up_Servers
+    rules:
+      - alert: LoadBalancerHealth
+        expr: up{instance=~'192.168.122.230:9100'} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Load Balancer Health Issue Detected"
+          description: "Load Balancer is not reachable"
+      - alert: Webserver0_Not_Reachable
+        expr: up{instance=~'192.168.122.111:9100'} == 0
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "LoadBalancer cannot reach one of the web server "
+          description: "web0 s down"
+      - alert: Webserver1_Not_Reachable
+        expr: up{instance=~'192.168.122.11:9100'} == 0
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "LoadBalancer cannot reach one of the web server  "
+          description: "web1 is down"
+      - alert: Salt Master Down
+        expr: up{job="salt_master"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Salt server is not reachable "
+          description: "Exporter on Salt master machince maybe Down or master machine could be down"
+      - alert: Prometheus Unreachable
+        expr: up{job="prometheus"} == 0
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prometheus is not reachable "
+          description: "Prometheus Service on the host maybe Down or Prometheus server could be down"
+      - alert: Gitlab server Unreachable
+        expr: up{job="gitlab"} == 0
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Gitlab is not reachable "
+          description: "Gitlab-CE Service on the host maybe Down or gitlab server could be down"
+
+
+#      - alert: ApacheServerPortNotReachable
+#        expr: up{job="apache"} == 0
+#        for: 5s
+#        labels:
+#          severity: critical
+#        annotations:
+#          summary: "Apache server is not reachable "
+#          description: "The Apache server port on {{ $labels.instance }} is not reachable on web servers"
+#          #  description: "Consul member exporter is failing to query, check logs for information on {{ $labels.instance }}"
+                                                                                                                                                                                                                                                                                                           1,1           Top
