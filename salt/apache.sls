@@ -1,7 +1,9 @@
 install_apache:
   pkg.installed:
-    - name: apache2
-   # - onlyif: grains['os'] == 'Debian' and grains['id'] == 'minion1'
+    - names:
+       - apache2
+       - prometheus-haproxy-exporter
+    # - onlyif: grains['os'] == 'Debian' and grains['id'] == 'minion1'
 
 /var/www/html/index.html:
   file.managed:
